@@ -1,25 +1,50 @@
-> [!IMPORTANT]
-> **A PROJEKT MÉG A TERVEZÉSI FÁZISÁBAN JÁR!**<br>
-> Amint elkészült a prototípus Figma-ban, elkezdem a fejlesztést és feltöltöm a fáljokat.
-<br>
+# Welcome to your Expo app 👋
 
-# Bubly🫧📱
-### Chat APP - Funkciók áttekintése
-- **SSO:** Clerk-alapú autentikáció e-mailes megerősítéssel, valamint Google, Apple és Facebook fiókokkal való bejelentkezés támogatása.
-- **Barátkezelés:** Felhasználók keresése, hozzáadása, törlése, tiltása, némítása, korlátozása és jelentése.
-- **Aktivitás kijelzése:** Barátok online állapotának megtekintése, utolsó elérhetőség (max. 60 percig).
-- **Privát beszélgetések:** Közvetlen üzenetküldés barátokkal, illetve beszélgetések archiválása.
-- **Csoportok:** Csoportok létrehozása és menedzselése.
-- **Multimédiás tartalom:** Képek, hangfájlok és egyéb fájlok megosztása.
-- **Keresési funkciók:** Beszélgetések és fájlok keresése adott baráttal.
-- **Interakciók:** Gyors reakciók, válaszüzenetek és üzenettovábbítás lehetősége.
-- **Értesítések:** Új üzenetekről érkező push értesítések telefonon.
-- **Testreszabhatóság:** Világos/sötét mód, chat témák, értesítési és hangbeállítások módosítása.
-- **Story funkció (tervezés alatt):** Ideiglenes történetek megosztásának lehetősége.
-- **Profilkezelés:** Saját profil szerkesztése, barátok profiljának megtekintése.
-<br>
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-# Információk ℹ️
-Szoftverfejlesztési módszerek (GEIAL511-M)<br>
-Nyíri Dániel (AUGHMI)<br>
-Mérnökinformatikus (MSc)
+## Get started
+
+1. Install dependencies
+
+   ```bash
+   npm install
+   ```
+
+2. Start the app
+
+   ```bash
+    npx expo start
+   ```
+
+In the output, you'll find options to open the app in a
+
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+
+## Get a fresh project
+
+When you're ready, run:
+
+```bash
+npm run reset-project
+```
+
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+
+## Learn more
+
+To learn more about developing your project with Expo, look at the following resources:
+
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+
+## Join the community
+
+Join our community of developers creating universal apps.
+
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
