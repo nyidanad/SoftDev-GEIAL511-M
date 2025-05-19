@@ -24,6 +24,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      ["expo-font", { "fonts": ["./assets/fonts/CheGuevaraBarry-Brown.ttf"] }],
       "expo-router",
       [
         "expo-splash-screen",
