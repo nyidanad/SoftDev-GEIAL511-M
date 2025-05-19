@@ -1,10 +1,11 @@
 import React from 'react'
+import { View } from 'react-native'
 
 type Props = {}
 
 const Profile = (props: Props) => {
   return (
-    <div>Profile Page</div>
+    <View>Profile Page</View>
   )
 }
 

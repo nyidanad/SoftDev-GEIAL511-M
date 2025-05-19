@@ -1,10 +1,11 @@
 import React from 'react'
+import { View } from 'react-native'
 
 type Props = {}
 
 const ChatSettings = (props: Props) => {
   return (
-    <div>ChatSettings Page</div>
+    <View>ChatSettings Page</View>
   )
 }
 

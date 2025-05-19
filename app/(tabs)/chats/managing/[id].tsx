@@ -1,10 +1,11 @@
 import React from 'react'
+import { View } from 'react-native'
 
 type Props = {}
 
 const Managing = (props: Props) => {
   return (
-    <div>Managing Page</div>
+    <View>Managing Page</View>
   )
 }
 

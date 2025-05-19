@@ -1,10 +1,11 @@
 import React from 'react'
+import { View } from 'react-native'
 
 type Props = {}
 
 const Archive = (props: Props) => {
   return (
-    <div>Archive Page</div>
+    <View>Archive Page</View>
   )
 }
 

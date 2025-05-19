@@ -1,10 +1,11 @@
 import React from 'react'
+import { View } from 'react-native'
 
 type Props = {}
 
 const Updates = (props: Props) => {
   return (
-    <div>Updates Page</div>
+    <View>Updates Page</View>
   )
 }
 
