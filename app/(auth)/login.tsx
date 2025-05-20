@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
     fontSize: 34,
     margin: 24,
     color: "#11175A",
+    fontWeight: 'bold',
   },
   viewInput: {
     flexDirection: "row",
@@ -189,6 +190,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     textAlignVertical: "center",
+    fontWeight: 'bold',
   },
   touchBtn: {
     marginTop: 16,
@@ -236,6 +238,7 @@ const styles = StyleSheet.create({
   noAccText: {
     color: "#11175A",
     textDecorationLine: "underline",
+    fontWeight: 'bold',
   },
   mainView: {
     flex: 1,

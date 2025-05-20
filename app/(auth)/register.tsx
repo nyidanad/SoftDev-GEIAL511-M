@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { useSignUp } from '@clerk/clerk-expo'
-import { Link, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function SignUpScreen() {
+const Register = () => {
   const { isLoaded, signUp, setActive } = useSignUp()
   const router = useRouter()
 
@@ -80,31 +81,202 @@ export default function SignUpScreen() {
   }
 
   return (
-    <View>
-      <>
-        <Text>Sign up</Text>
-        <TextInput
-          autoCapitalize="none"
-          value={emailAddress}
-          placeholder="Enter email"
-          onChangeText={(email) => setEmailAddress(email)}
-        />
-        <TextInput
-          value={password}
-          placeholder="Enter password"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-        />
-        <TouchableOpacity onPress={onSignUpPress}>
-          <Text>Continue</Text>
-        </TouchableOpacity>
-        <View style={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
-          <Text>Already have an account?</Text>
-          <Link href="/(auth)/login">
-            <Text>Sign in</Text>
-          </Link>
+    <KeyboardAvoidingView style={{ flex: 1 }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.mainView}>
+          <StatusBar backgroundColor={"#11175A"} />
+          <View style={styles.bublyView}>
+            <Image
+              source={require("@/assets/logos/bubly-logo-alpha.png")}
+              style={styles.bublyIcon}
+            />
+          </View>
+          <View style={styles.viewStyle}>
+            <Text style={styles.register}>Sign Up</Text>
+
+            <View style={styles.viewInput}>
+              <Ionicons name="person-outline" style={styles.inputIcons} />
+              <TextInput
+                style={styles.input}
+                placeholder="Name"
+                placeholderTextColor={"#BBBBBB"}
+              />
+            </View>
+            <View style={styles.viewInput}>
+              <Ionicons name="mail-open-outline" style={styles.inputIcons} />
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor={"#BBBBBB"}
+              />
+            </View>
+
+            <View style={styles.viewInput}>
+              <Ionicons name="key-outline" style={styles.inputIcons} />
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor={"#BBBBBB"}
+              />
+            </View>
+
+            <View style={styles.viewInput}>
+              <Ionicons name="key-outline" style={styles.inputIcons} />
+              <TextInput
+                style={styles.input}
+                placeholder="Confirm Password"
+                placeholderTextColor={"#BBBBBB"}
+              />
+            </View>
+
+            <TouchableOpacity style={styles.touchBtn}>
+              <Text style={styles.loginBtn}>Sign up</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.conditionsView}>
+            <Text style={styles.conditionText}>
+              By signing up, you’re agree to our{" "}
+              <Text style={styles.conditionTextBlue}>Terms & Conditions</Text>{" "}
+              and
+              <Text style={styles.conditionTextBlue}> Privacy Policy</Text>.
+            </Text>
+          </View>
+
+          <View style={styles.noAccView}>
+            <Text>Already have account? </Text>
+            <Text style={styles.noAccText}>Login</Text>
+          </View>
         </View>
-      </>
-    </View>
-  )
-}
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+};
+
+export default Register;
+
+const styles = StyleSheet.create({
+  viewStyle: {
+    margin: 20,
+    borderRadius: 20,
+    alignItems: "center",
+    paddingHorizontal: 20,
+    backgroundColor: "#FFFFFF",
+    marginTop: 300,
+    paddingBottom: 30,
+  },
+  register: {
+    textAlign: "center",
+    fontSize: 34,
+    margin: 24,
+    color: "#11175A",
+    fontWeight: 'bold',
+  },
+  viewInput: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: "#F2F2F7",
+  },
+  inputIcons: {
+    fontSize: 22,
+    marginHorizontal: 10,
+    color: "#BBBBBB",
+  },
+  input: {
+    flex: 1,
+    borderRadius: 8,
+    width: "100%",
+    color: "#363636",
+  },
+  loginBtn: {
+    textAlign: "center",
+    color: "white",
+    fontSize: 18,
+    textAlignVertical: "center",
+    fontWeight: 'bold',
+  },
+  touchBtn: {
+    marginTop: 16,
+    backgroundColor: "#11175A",
+    justifyContent: "center",
+    borderRadius: 8,
+    width: "100%",
+    height: 50,
+  },
+  forgotPwd: {
+    textAlign: "center",
+    margin: 25,
+    textDecorationLine: "underline",
+    color: "#11175A",
+  },
+  continue: {
+    color: "#D1D1D6",
+    textAlign: "center",
+  },
+  media: {
+    margin: 22,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
+  mediaBtn: {
+    backgroundColor: "#FFFFFF",
+    flexDirection: "row",
+    justifyContent: "center",
+    padding: 10,
+    borderRadius: 6,
+  },
+  mediaBtnText: {
+    paddingHorizontal: 10,
+  },
+  mediaIcon: {
+    width: 20,
+    height: 20,
+    resizeMode: "contain",
+  },
+  noAccView: {
+    flexDirection: "row",
+    justifyContent: "center",
+    padding: 40,
+  },
+  noAccText: {
+    color: "#11175A",
+    textDecorationLine: "underline",
+    fontWeight: 'bold',
+  },
+  mainView: {
+    flex: 1,
+    backgroundColor: "#F6F6F6",
+  },
+  bublyView: {
+    backgroundColor: "#11175A",
+    borderBottomEndRadius: 40,
+    borderBottomStartRadius: 40,
+    position: "absolute",
+    width: "100%",
+    height: 450,
+  },
+  bublyIcon: {
+    width: 250,
+    height: 250,
+    marginTop: 20,
+    alignSelf: "center",
+  },
+  conditionsView: {
+    marginHorizontal: 40,
+  },
+  conditionText: {
+    fontSize: 12,
+    color: "#999999",
+  },
+  conditionTextBlue: {
+    fontSize: 12,
+    color: "#11175A",
+  },
+});
