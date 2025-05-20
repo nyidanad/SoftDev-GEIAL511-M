@@ -3,6 +3,7 @@ import { Image, KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, Text, T
 import { useSignUp } from '@clerk/clerk-expo'
 import { useRouter } from 'expo-router'
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Feather from '@expo/vector-icons/Feather';
 
 const Register = () => {
   const { isLoaded, signUp, setActive } = useSignUp()
@@ -121,6 +122,7 @@ const Register = () => {
                 placeholder="Password"
                 placeholderTextColor={"#BBBBBB"}
               />
+              <Feather name="eye-off" style={styles.inputIcons} />
             </View>
 
             <View style={styles.viewInput}>
@@ -130,6 +132,7 @@ const Register = () => {
                 placeholder="Confirm Password"
                 placeholderTextColor={"#BBBBBB"}
               />
+              <Feather name="eye-off" style={styles.inputIcons} />
             </View>
 
             <TouchableOpacity style={styles.touchBtn}>

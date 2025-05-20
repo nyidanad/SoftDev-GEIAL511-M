@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router'
 import { Image, KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import Feather from '@expo/vector-icons/Feather'
 
 const Login = () => {
   const { signIn, setActive, isLoaded } = useSignIn()
@@ -71,6 +72,7 @@ const Login = () => {
                 placeholder="Password"
                 placeholderTextColor={"#BBBBBB"}
               />
+              <Feather name="eye-off" style={styles.inputIcons} />
             </View>
             <TouchableOpacity style={styles.touchBtn}>
               <Text style={styles.loginBtn}>Log in</Text>
