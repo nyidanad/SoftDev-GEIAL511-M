@@ -1,11 +1,19 @@
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+
+import AddChatModal from './addChatModal'
 
 const addChatButton = () => {
+  const [showModal, setShowModal] = useState(false)
+
   return (
-    <TouchableOpacity style={styles.container}>
-      <Image source={require('@/assets/icons/chat.png')} style={styles.icon} />
-    </TouchableOpacity>
+    <>
+      <TouchableOpacity style={styles.container} onPress={() => setShowModal(true)}>
+        <Image source={require('@/assets/icons/chat.png')} style={styles.icon} />
+      </TouchableOpacity>
+
+      <AddChatModal showModal={showModal} setShowModal={setShowModal} />
+    </>
   )
 }
 
