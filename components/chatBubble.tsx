@@ -1,44 +1,35 @@
-import { ColorValue, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ColorValue, Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 type chatBubleProps = {
   name: string
-  status: "online" | "offline" | "dnd" | "idle"
+  status: "online" | "offline" | "dnd"
   lastMsg?: string
   lastMsgStatus?: "sent" | "recieved" | "red"
   lastMsgTime?: string
   unread: boolean
-  image: any
+  image: ImageSourcePropType
 }
 
 const chatBubble = ({name, status, lastMsg, lastMsgStatus, lastMsgTime, unread, image}: chatBubleProps) => {
-  let icon!: keyof typeof Ionicons.glyphMap
+  let icon: keyof typeof Ionicons.glyphMap = 'warning'
   switch(lastMsgStatus) {
     case "sent":
       icon = 'checkmark-circle-outline'
-      break
-    case "recieved":
-      icon = 'checkmark-circle'
       break
     case "red":
       icon = 'checkmark-done'
       break
   }
 
-  let statusColor: ColorValue
+  let statusColor: ColorValue = '#000'
   switch(status) {
     case "online":
       statusColor = '#34C759'
       break
-    case "offline":
-      statusColor = '#8C9091'
-      break
     case "dnd":
       statusColor = '#FF3B30'
-      break
-    case "idle":
-      statusColor = '#FFCC00'
       break
   }
 
@@ -46,18 +37,24 @@ const chatBubble = ({name, status, lastMsg, lastMsgStatus, lastMsgTime, unread, 
     <TouchableOpacity style={styles.container}>
       <View style={styles.chatProfile}>
         <Image 
+          source={image}
           style={styles.chatImg} 
-          source={require('../assets/images/avatar.jpg')}
         />
-        <View style={[styles.chatStatus, { backgroundColor: statusColor }]} />
+        {status !== 'offline' && <View style={[styles.chatStatus, { backgroundColor: statusColor }]} />}
       </View>
 
       <View style={styles.chatContent}>
         <View style={styles.chatWrapper}>
           <Text style={[styles.name, unread == true && { fontWeight: 'bold' }]}>{name}</Text>
           <View style={styles.chatStatusDetails}>
-            <Ionicons name={icon} style={styles.icon} />
-            <Text style={[styles.lastMsg, unread == true && { color: '#363636', fontWeight: '500' }]}>{lastMsg}</Text>
+            {unread == false && <Ionicons name={icon} style={styles.icon} />}
+            <Text 
+              style={[styles.lastMsg, unread == true && { color: '#363636', fontWeight: '500' }]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {lastMsg}
+            </Text>
           </View>
         </View>
         <View style={styles.chatDetails}>
@@ -84,6 +81,8 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 999,
+    borderColor: 'rgba(0, 0, 0, 0.03)',
+    borderWidth: 1,
   },
   chatStatus: {
     position: 'absolute',
@@ -103,7 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   chatWrapper: {
-    width: '85%',
+    width: '75%',
     justifyContent: 'center',
   },
   name: {
@@ -122,6 +121,7 @@ const styles = StyleSheet.create({
   lastMsg: {
     color: '#AEAEB2',
     fontSize: 12,
+    flexShrink: 1,
   },
   chatDetails: {
     flex: 1,
