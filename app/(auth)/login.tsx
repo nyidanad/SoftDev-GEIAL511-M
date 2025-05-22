@@ -1,5 +1,5 @@
 import { useSignIn } from '@clerk/clerk-expo'
-import { useRouter } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { Image, KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -77,8 +77,10 @@ const Login = () => {
             <TouchableOpacity style={styles.touchBtn}>
               <Text style={styles.loginBtn}>Log in</Text>
             </TouchableOpacity>
-
-            <Text style={styles.forgotPwd}>Forgot Password?</Text>
+            
+            <Link style={styles.forgotPwd} href={'/forgot-password'}>
+              <Text style={styles.forgotPwdText}>Forgot Password?</Text>
+            </Link>
           </View>
 
           <View
@@ -141,7 +143,7 @@ const Login = () => {
 
           <View style={styles.noAccView}>
             <Text>Have no account? </Text>
-            <Text style={styles.noAccText}>Sign up</Text>
+            <Link style={styles.noAccText} href={'/register'}>Sign up</Link>
           </View>
         </View>
       </ScrollView>
@@ -205,8 +207,10 @@ const styles = StyleSheet.create({
   forgotPwd: {
     textAlign: "center",
     margin: 25,
-    textDecorationLine: "underline",
+  },
+  forgotPwdText: {
     color: "#11175A",
+    textDecorationLine: "underline",
   },
   continue: {
     color: "#D1D1D6",

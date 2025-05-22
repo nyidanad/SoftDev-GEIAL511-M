@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Image, KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { useSignUp } from '@clerk/clerk-expo'
-import { useRouter } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 
@@ -151,7 +151,7 @@ const Register = () => {
 
           <View style={styles.noAccView}>
             <Text>Already have account? </Text>
-            <Text style={styles.noAccText}>Login</Text>
+            <Link style={styles.noAccText} href={'/login'}>Login</Link>
           </View>
         </View>
       </ScrollView>

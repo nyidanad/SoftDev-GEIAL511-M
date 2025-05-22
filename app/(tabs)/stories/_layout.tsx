@@ -1,10 +1,13 @@
+import { Stack } from 'expo-router'
 import React from 'react'
 
-type Props = {}
-
-const StoriesLayout = (props: Props) => {
+const StoriesLayout = () => {
   return (
-    <div></div>
+    <Stack>
+      <Stack.Screen name='index' options={{
+        headerShown: false,
+      }} />
+    </Stack>
   )
 }
 
