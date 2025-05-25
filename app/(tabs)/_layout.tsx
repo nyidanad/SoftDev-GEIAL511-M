@@ -1,11 +1,17 @@
 import React from 'react'
-import { Tabs } from 'expo-router'
+import { Tabs, useSegments } from 'expo-router'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import Feather from '@expo/vector-icons/Feather'
 
 const TabsLayout = () => {
+  const segments = useSegments();
+  const hideTabBar = [...segments].includes("[id]");
+
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: '#007AFF', tabBarInactiveTintColor: '#B1B1B1' }}>
+    <Tabs 
+      screenOptions={{ tabBarActiveTintColor: '#007AFF', tabBarInactiveTintColor: '#B1B1B1' }}
+      tabBar={hideTabBar ? () => null : undefined}
+    >
       <Tabs.Screen
         name="chats"
         options={{

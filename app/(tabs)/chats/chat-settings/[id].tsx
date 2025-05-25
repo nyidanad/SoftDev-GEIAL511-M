@@ -1,19 +1,22 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useLocalSearchParams } from 'expo-router';
 import React from 'react'
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 type Props = {}
 
 const ChatSettings = (props: Props) => {
+  const { name, status, image } = useLocalSearchParams()
+
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.mainView}>
-        <Image
-          source={require("@/assets/images/avatar.png")}
+        <Image 
+          source={image as any}
           style={styles.profilePic}
         />
-        <Text style={styles.profileText}>John Doe</Text>
-        <Text style={styles.profileStatus}>Online</Text>
+        <Text style={styles.profileText}>{name}</Text>
+        <Text style={styles.profileStatus}>{status}</Text>
         <View style={styles.customView}>
           <Text style={styles.customText}>CUSTOMIZATION</Text>
           <View style={styles.colorView}>
@@ -193,13 +196,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   profileText: {
-    textAlign: "center",
+    color: '#363636',
     fontSize: 20,
+    textAlign: "center",
+    fontWeight: 'bold',
   },
   profileStatus: {
     textAlign: "center",
     fontSize: 12,
     color: "#BBBBBE",
+    textTransform: 'capitalize'
   },
   customView: {
     margin: 10,

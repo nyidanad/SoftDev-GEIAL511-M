@@ -10,9 +10,10 @@ type chatBubleProps = {
   lastMsgTime?: string
   unread: boolean
   image: ImageSourcePropType
+  onPress: () => void
 }
 
-const chatBubble = ({name, status, lastMsg, lastMsgStatus, lastMsgTime, unread, image}: chatBubleProps) => {
+const chatBubble = ({name, status, lastMsg, lastMsgStatus, lastMsgTime, unread, image, onPress}: chatBubleProps) => {
   let icon: keyof typeof Ionicons.glyphMap = 'warning'
   switch(lastMsgStatus) {
     case "sent":
@@ -34,7 +35,7 @@ const chatBubble = ({name, status, lastMsg, lastMsgStatus, lastMsgTime, unread, 
   }
 
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.chatProfile}>
         <Image 
           source={image}
