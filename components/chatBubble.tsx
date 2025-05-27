@@ -1,8 +1,11 @@
 import { ColorValue, Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
+import ChatOptionsModal from './chatOptionsModal'
+
 type chatBubleProps = {
+  index: number
   name: string
   status: "online" | "offline" | "dnd"
   lastMsg?: string
@@ -13,7 +16,21 @@ type chatBubleProps = {
   onPress: () => void
 }
 
-const chatBubble = ({name, status, lastMsg, lastMsgStatus, lastMsgTime, unread, image, onPress}: chatBubleProps) => {
+const chatBubble = ({index, name, status, lastMsg, lastMsgStatus, lastMsgTime, unread, image, onPress}: chatBubleProps) => {
+  const [showModal, setShowModal] = useState(false)
+  const [modalPosition, setModalPosition] = useState({ top: 0 })
+  const chatsRef = useRef<(View | null)[]>([])
+
+  // Calculating Modal position
+  const calcModalPosition = (index: number) => {
+    const ref = chatsRef.current[index]
+    if (ref) {
+      ref.measureInWindow((x, y, width, height) => {
+        setModalPosition({ top: y + height - 60 })
+      })
+    }
+  }
+
   let icon: keyof typeof Ionicons.glyphMap = 'warning'
   switch(lastMsgStatus) {
     case "sent":
@@ -35,35 +52,41 @@ const chatBubble = ({name, status, lastMsg, lastMsgStatus, lastMsgTime, unread, 
   }
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <View style={styles.chatProfile}>
-        <Image 
-          source={image}
-          style={styles.chatImg} 
-        />
-        {status !== 'offline' && <View style={[styles.chatStatus, { backgroundColor: statusColor }]} />}
-      </View>
+    <View ref={(ref) => (chatsRef.current[index] = ref)}>
+      <TouchableOpacity style={styles.container} 
+        onPress={onPress}
+        onLongPress={() => [calcModalPosition(index), setShowModal(true)]}
+      >
+        <View style={styles.chatProfile}>
+          <Image 
+            source={image}
+            style={styles.chatImg} 
+          />
+          {status !== 'offline' && <View style={[styles.chatStatus, { backgroundColor: statusColor }]} />}
+        </View>
 
-      <View style={styles.chatContent}>
-        <View style={styles.chatWrapper}>
-          <Text style={[styles.name, unread == true && { fontWeight: 'bold' }]}>{name}</Text>
-          <View style={styles.chatStatusDetails}>
-            {unread == false && <Ionicons name={icon} style={styles.icon} />}
-            <Text 
-              style={[styles.lastMsg, unread == true && { color: '#363636', fontWeight: '500' }]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {lastMsg}
-            </Text>
+        <View style={styles.chatContent}>
+          <View style={styles.chatWrapper}>
+            <Text style={[styles.name, unread == true && { fontWeight: 'bold' }]}>{name}</Text>
+            <View style={styles.chatStatusDetails}>
+              {unread == false && <Ionicons name={icon} style={styles.icon} />}
+              <Text 
+                style={[styles.lastMsg, unread == true && { color: '#363636', fontWeight: '500' }]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {lastMsg}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.chatDetails}>
+            {unread == true ? <View style={styles.undread} /> : null }
+            <Text style={styles.lastMsgTime}>{lastMsgTime}</Text>
           </View>
         </View>
-        <View style={styles.chatDetails}>
-          {unread == true ? <View style={styles.undread} /> : null }
-          <Text style={styles.lastMsgTime}>{lastMsgTime}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+      <ChatOptionsModal showModal={showModal} setShowModal={setShowModal} modalPosition={modalPosition} />
+    </View>
   )
 }
 

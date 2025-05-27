@@ -77,8 +77,9 @@ const Chats = () => {
           <FlatList
             data={chatsData}
             keyExtractor={(item) => item.id}
-            renderItem={({item}) => 
+            renderItem={({item, index}) => 
               <ChatBubble 
+                index={index}
                 name={item.name}
                 status={item.status}
                 lastMsg={item.lastMsg}
