@@ -1,18 +1,20 @@
-import React, { useEffect } from 'react'
-import { FlatList, StatusBar, StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useFonts } from 'expo-font'
+import { useRouter } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 
 import ChatBubble from '@/components/chatBubble'
 import AddChatButton from '@/components/addChatButton'
 import StoryBubble from '@/components/storyBubble'
 import AddStoryButton from '@/components/addStoryButton'
-import { useRouter } from 'expo-router'
+import SidebarModal from '@/components/sidebarModal'
 
 SplashScreen.preventAutoHideAsync();
 
 const Chats = () => {
+  const [showSidebar, setShowSidebar] = useState(false)
   const router = useRouter()
 
   const [loaded, error] = useFonts({
@@ -56,7 +58,9 @@ const Chats = () => {
       <StatusBar backgroundColor={'transparent'} barStyle={'dark-content'} />
       <View style={styles.container}>
         <View style={styles.header}>
-          <FontAwesome name='bars' style={styles.headerIcons} />
+          <TouchableOpacity onPress={() => setShowSidebar(true)} >
+            <FontAwesome name='bars' style={styles.headerIcons} />
+          </TouchableOpacity>
           <Text style={{ fontFamily: 'CheGueveraBarry', fontSize: 26, color: '#11175A' }}>Bubly</Text>
           <FontAwesome name='search' style={styles.headerIcons} />
         </View>
@@ -102,6 +106,7 @@ const Chats = () => {
           />
         </View>
         <AddChatButton />
+        <SidebarModal showModal={showSidebar} setShowModal={setShowSidebar} />
       </View>
     </>
   )
