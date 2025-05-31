@@ -1,10 +1,9 @@
-import { useAuth } from '@clerk/clerk-expo'
 import { Redirect } from 'expo-router'
+import { getAuth } from 'firebase/auth'
 
 export default function App() {
-  const { isSignedIn, isLoaded } = useAuth()
+  const auth = getAuth();
+  const user = auth.currentUser;
 
-  if (!isLoaded) return null
-
-  return <Redirect href={isSignedIn ? '/chats' : '/login'} />
+  return <Redirect href={ user ? '/chats' : '/login' } />
 }

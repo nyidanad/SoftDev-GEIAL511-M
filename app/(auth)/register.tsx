@@ -1,84 +1,54 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import { Image, KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { useSignUp } from '@clerk/clerk-expo'
 import { Link, useRouter } from 'expo-router'
-import Ionicons from '@expo/vector-icons/Ionicons';
-import Feather from '@expo/vector-icons/Feather';
+import { Feather, Ionicons } from '@expo/vector-icons'
+
+import { createUserWithEmailAndPassword } from '@firebase/auth'
+import { setDoc, collection, doc } from 'firebase/firestore'
+import { auth, db } from '@/firebaseConfig'
 
 const Register = () => {
-  const { isLoaded, signUp, setActive } = useSignUp()
+  const users = collection(db, 'users')
   const router = useRouter()
+  const [name, setName] = useState<string | undefined>(undefined)
+  const [email, setEmail] = useState<string | undefined>(undefined)
+  const [password, setPassword] = useState<string | undefined>(undefined)
+  const [confirmPassword, setConfirmPassword] = useState<string | undefined>(undefined)
 
-  const [emailAddress, setEmailAddress] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [pendingVerification, setPendingVerification] = React.useState(false)
-  const [code, setCode] = React.useState('')
-
-  // Handle submission of sign-up form
-  const onSignUpPress = async () => {
-    if (!isLoaded) return
-
-    // Start sign-up process using email and password provided
-    try {
-      await signUp.create({
-        emailAddress,
-        password,
-      })
-
-      // Send user an email with verification code
-      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
-
-      // Set 'pendingVerification' to true to display second form
-      // and capture OTP code
-      setPendingVerification(true)
-    } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+  // SignUp procedure
+  const signUp = async () => {
+    if (name === undefined) {
+      alert("Name is required");
+      return;
     }
-  }
+    else if (email === undefined) {
+      alert("Email is required");
+      return;
+    }
+    else if (password === undefined) {
+      alert("Passwords is required");
+      return;
+    }
+    else if (confirmPassword === undefined) {
+      alert("Confirm Passwords is required");
+      return;
+    }
 
-  // Handle submission of verification form
-  const onVerifyPress = async () => {
-    if (!isLoaded) return
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
 
     try {
-      // Use the code the user provided to attempt verification
-      const signUpAttempt = await signUp.attemptEmailAddressVerification({
-        code,
-      })
-
-      // If verification was completed, set the session to active
-      // and redirect the user
-      if (signUpAttempt.status === 'complete') {
-        await setActive({ session: signUpAttempt.createdSessionId })
-        router.replace('/')
-      } else {
-        // If the status is not complete, check why. User may need to
-        // complete further steps.
-        console.error(JSON.stringify(signUpAttempt, null, 2))
-      }
-    } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+      const user = await createUserWithEmailAndPassword(auth, email, password)
+      if (user) {
+        await setDoc(doc(db, "users", user.user.uid), { name: name, email: email, avatar: '', status: 'online' })
+        router.replace('/chats')
+      } 
+    } catch (error) {
+      console.log(error)
+      alert('Sign in failed: ' + error)
     }
-  }
-
-  if (pendingVerification) {
-    return (
-      <>
-        <Text>Verify your email</Text>
-        <TextInput
-          value={code}
-          placeholder="Enter your verification code"
-          onChangeText={(code) => setCode(code)}
-        />
-        <TouchableOpacity onPress={onVerifyPress}>
-          <Text>Verify</Text>
-        </TouchableOpacity>
-      </>
-    )
   }
 
   return (
@@ -98,44 +68,59 @@ const Register = () => {
           <View style={styles.viewStyle}>
             <Text style={styles.register}>Sign Up</Text>
 
+            {/* Name */}
             <View style={styles.viewInput}>
               <Ionicons name="person-outline" style={styles.inputIcons} />
               <TextInput
                 style={styles.input}
                 placeholder="Name"
                 placeholderTextColor={"#BBBBBB"}
+                value={name}
+                onChangeText={setName}
               />
             </View>
+
+            {/* Email */}
             <View style={styles.viewInput}>
               <Ionicons name="mail-open-outline" style={styles.inputIcons} />
               <TextInput
                 style={styles.input}
                 placeholder="Email"
                 placeholderTextColor={"#BBBBBB"}
+                value={email}
+                onChangeText={setEmail}
               />
             </View>
 
+            {/* Password */}
             <View style={styles.viewInput}>
               <Ionicons name="key-outline" style={styles.inputIcons} />
               <TextInput
                 style={styles.input}
                 placeholder="Password"
                 placeholderTextColor={"#BBBBBB"}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={true}
               />
               <Feather name="eye-off" style={styles.inputIcons} />
             </View>
 
+            {/* Confirm Password */}
             <View style={styles.viewInput}>
               <Ionicons name="key-outline" style={styles.inputIcons} />
               <TextInput
                 style={styles.input}
                 placeholder="Confirm Password"
                 placeholderTextColor={"#BBBBBB"}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry={true}
               />
               <Feather name="eye-off" style={styles.inputIcons} />
             </View>
 
-            <TouchableOpacity style={styles.touchBtn}>
+            <TouchableOpacity style={styles.touchBtn} onPress={signUp}>
               <Text style={styles.loginBtn}>Sign up</Text>
             </TouchableOpacity>
           </View>
@@ -156,10 +141,10 @@ const Register = () => {
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register
 
 const styles = StyleSheet.create({
   viewStyle: {
@@ -282,4 +267,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#11175A",
   },
-});
+})

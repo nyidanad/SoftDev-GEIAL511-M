@@ -38,3 +38,5 @@ yarn-error.*
 app-example
 .env
 /assets/avatars/
+android/
+firebaseConfig.ts

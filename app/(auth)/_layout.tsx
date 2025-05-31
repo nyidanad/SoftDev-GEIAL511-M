@@ -12,7 +12,6 @@ const AuthLayout = () => {
         headerShown: false,
         animationTypeForReplace: 'pop',
         animation: 'ios_from_right',
-
       }} />
       <Stack.Screen name='forgot-password' options={{
         headerShown: false,

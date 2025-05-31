@@ -1,8 +1,11 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { useFonts } from 'expo-font'
 import { useRouter } from 'expo-router'
+
+import { getAuth } from '@firebase/auth'
+import { auth } from '@/firebaseConfig'
 
 type ModalProps = {
   showModal: boolean
@@ -20,79 +23,86 @@ const sidebarModal = ({ showModal, setShowModal }: ModalProps) => {
     return null;
   }
 
+  // Auth changes listener
+  getAuth().onAuthStateChanged((user) => {
+    if (!user) router.replace('/login')
+  })
+
   return (
     <Modal
       visible={showModal}
-      backdropColor={'rgba(0, 0, 0, 0.01)'}
+      transparent={true}
       animationType='slide'
       onRequestClose={() => setShowModal(false)}
     >
-      <View style={styles.container}>
-        <View style={[styles.headerWrapper, { justifyContent: 'space-between' }]}>
-          <View style={styles.header}>
-            <Image source={require('@/assets/logos/bubly-logo-notitle.png')} style={styles.logo} />
-            <Text style={styles.title}>Bubly</Text>
-          </View>
-          <TouchableOpacity onPress={() => setShowModal(false)} >
-            <Feather name='sidebar' style={styles.headerIcon} />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.tabs}>
-          {/* Chats */}
-          <TouchableOpacity style={[styles.tabWrapper, { backgroundColor: 'rgba(242,242,247,0.4)' }]}>
-            <Image source={require('@/assets/icons/sidebar-chats.png')} style={{ width: 25, height: 25 }} />
-            <Text style={styles.text}>Chats</Text>
-          </TouchableOpacity>
-
-          {/* Managing */}
-          <TouchableOpacity style={styles.tabWrapper}>
-            <MaterialCommunityIcons name='card-account-details-outline' style={[styles.icon, { color: '#9A8899' }]} />
-            <Text style={styles.text}>Managing</Text>
-          </TouchableOpacity>
-
-          {/* Updates & FAQ */}
-          <TouchableOpacity style={styles.tabWrapper}>
-            <Ionicons name='barcode-outline' style={[styles.icon, { color: '#FF9500' }]} />
-            <Text style={styles.text}>Updates & FAQ</Text>
-          </TouchableOpacity>
-
-          {/* Settings */}
-          <TouchableOpacity style={styles.tabWrapper}>
-            <Feather name='settings' style={[styles.icon, { color: '#9471CA' }]} />
-            <Text style={styles.text}>Settings</Text>
-          </TouchableOpacity>
-
-          {/* Archive */}
-          <TouchableOpacity style={styles.tabWrapper}>
-            <Ionicons name='albums' style={[styles.icon, { color: '#4F5358' }]} />
-            <Text style={styles.text}>Archive</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.detailsContainer}>
-          <View style={styles.profile}>
-            <Image source={require('@/assets/images/avatar.png')} style={styles.avatar} />
-            <View>
-              <Text style={styles.name}>Nyíri Dániel</Text>
-              <Text style={styles.email}>nyiridaniel3@gmail.com</Text>
+      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.3)' }}>
+        <View style={styles.container}>
+          <View style={[styles.headerWrapper, { justifyContent: 'space-between' }]}>
+            <View style={styles.header}>
+              <Image source={require('@/assets/logos/bubly-logo-notitle.png')} style={styles.logo} />
+              <Text style={styles.title}>Bubly</Text>
             </View>
+            <TouchableOpacity onPress={() => setShowModal(false)} >
+              <Feather name='sidebar' style={styles.headerIcon} />
+            </TouchableOpacity>
           </View>
-          <View style={styles.options}>
-            <TouchableOpacity  style={styles.statusOption}>
-              <View style={styles.detailsWrapper}>
-                <View style={styles.details}>
-                  <View style={styles.statusIcon} />
-                  <Text style={styles.optionsText}>Online</Text>
-                </View>
-                <Ionicons name='chevron-forward' style={styles.statusChevron} />
-              </View>
+
+          <View style={styles.tabs}>
+            {/* Chats */}
+            <TouchableOpacity style={[styles.tabWrapper, { backgroundColor: 'rgba(242,242,247,0.4)' }]}>
+              <Image source={require('@/assets/icons/sidebar-chats.png')} style={{ width: 25, height: 25 }} />
+              <Text style={styles.text}>Chats</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity  style={styles.logoutOption} onPress={() => router.replace('/login')}>
-              <Ionicons name='log-out-outline' style={styles.logoutIcon} />
-              <Text style={styles.optionsText}>Log out</Text>
+            {/* Managing */}
+            <TouchableOpacity style={styles.tabWrapper}>
+              <MaterialCommunityIcons name='card-account-details-outline' style={[styles.icon, { color: '#9A8899' }]} />
+              <Text style={styles.text}>Managing</Text>
             </TouchableOpacity>
+
+            {/* Updates & FAQ */}
+            <TouchableOpacity style={styles.tabWrapper}>
+              <Ionicons name='barcode-outline' style={[styles.icon, { color: '#FF9500' }]} />
+              <Text style={styles.text}>Updates & FAQ</Text>
+            </TouchableOpacity>
+
+            {/* Settings */}
+            <TouchableOpacity style={styles.tabWrapper}>
+              <Feather name='settings' style={[styles.icon, { color: '#9471CA' }]} />
+              <Text style={styles.text}>Settings</Text>
+            </TouchableOpacity>
+
+            {/* Archive */}
+            <TouchableOpacity style={styles.tabWrapper}>
+              <Ionicons name='albums' style={[styles.icon, { color: '#4F5358' }]} />
+              <Text style={styles.text}>Archive</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.detailsContainer}>
+            <View style={styles.profile}>
+              <Image source={require('@/assets/images/avatar.png')} style={styles.avatar} />
+              <View>
+                <Text style={styles.name}>Nyíri Dániel</Text>
+                <Text style={styles.email}>nyiridaniel3@gmail.com</Text>
+              </View>
+            </View>
+            <View style={styles.options}>
+              <TouchableOpacity  style={styles.statusOption}>
+                <View style={styles.detailsWrapper}>
+                  <View style={styles.details}>
+                    <View style={styles.statusIcon} />
+                    <Text style={styles.optionsText}>Online</Text>
+                  </View>
+                  <Ionicons name='chevron-forward' style={styles.statusChevron} />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity  style={styles.logoutOption} onPress={() => auth.signOut()}>
+                <Ionicons name='log-out-outline' style={styles.logoutIcon} />
+                <Text style={styles.optionsText}>Log out</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>

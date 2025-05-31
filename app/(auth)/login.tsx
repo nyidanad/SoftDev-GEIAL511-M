@@ -1,42 +1,34 @@
-import { useSignIn } from '@clerk/clerk-expo'
+import React, { useState } from 'react'
 import { Link, useRouter } from 'expo-router'
 import { Image, KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import Feather from '@expo/vector-icons/Feather'
 
+import { signInWithEmailAndPassword } from '@firebase/auth'
+import { auth } from '@/firebaseConfig'
+
 const Login = () => {
-  const { signIn, setActive, isLoaded } = useSignIn()
   const router = useRouter()
+  const [email, setEmail] = useState<string | undefined>(undefined)
+  const [password, setPassword] = useState<string | undefined>(undefined)
 
-  const [emailAddress, setEmailAddress] = React.useState('')
-  const [password, setPassword] = React.useState('')
+  const signIn = async () => {
+    if (email === undefined) {
+      alert("Email is required");
+      return;
+    }
+    else if (password === undefined) {
+      alert("Passwords is required");
+      return;
+    }
 
-  // Handle the submission of the sign-in form
-  const onSignInPress = async () => {
-    if (!isLoaded) return
-
-    // Start the sign-in process using the email and password provided
     try {
-      const signInAttempt = await signIn.create({
-        identifier: emailAddress,
-        password,
-      })
-
-      // If sign-in process is complete, set the created session as active
-      // and redirect the user
-      if (signInAttempt.status === 'complete') {
-        await setActive({ session: signInAttempt.createdSessionId })
-        router.replace('/')
-      } else {
-        // If the status isn't complete, check why. User might need to
-        // complete further steps.
-        console.error(JSON.stringify(signInAttempt, null, 2))
-      }
-    } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+      const user = await signInWithEmailAndPassword(auth, email, password)
+      console.log(user.user.uid)
+      if (user) router.replace('/chats')
+    } catch (error) {
+      console.log(error)
+      alert('Sign in failed')
     }
   }
 
@@ -47,7 +39,7 @@ const Login = () => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.mainView}>
-          <StatusBar backgroundColor={"#11175A"} />
+          <StatusBar backgroundColor={"#11175A"} barStyle={'light-content'} />
           <View style={styles.bublyView}>
             <Image
               source={require("@/assets/logos/bubly-logo-alpha.png")}
@@ -57,24 +49,33 @@ const Login = () => {
           <View style={styles.viewStyle}>
             <Text style={styles.login}>Login</Text>
 
+            {/* email */}
             <View style={styles.viewInput}>
               <Ionicons name="mail-open-outline" style={styles.inputIcons} />
               <TextInput
                 style={styles.input}
                 placeholder="Email"
                 placeholderTextColor={"#BBBBBB"}
+                value={email}
+                onChangeText={setEmail}
               />
             </View>
+
+            {/* password */}
             <View style={styles.viewInput}>
               <Ionicons name="key-outline" style={styles.inputIcons} />
               <TextInput
                 style={styles.input}
                 placeholder="Password"
                 placeholderTextColor={"#BBBBBB"}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={true}
               />
               <Feather name="eye-off" style={styles.inputIcons} />
             </View>
-            <TouchableOpacity style={styles.touchBtn}>
+
+            <TouchableOpacity style={styles.touchBtn} onPress={signIn}>
               <Text style={styles.loginBtn}>Log in</Text>
             </TouchableOpacity>
             

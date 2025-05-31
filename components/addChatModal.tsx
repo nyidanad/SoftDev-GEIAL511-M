@@ -13,41 +13,43 @@ const addChatModal = ({showModal, setShowModal}: modalProps) => {
     <Modal
       visible={showModal}
       style={styles.modal}
-      backdropColor={'rgba(0, 0, 0, 0.01)'}
+      transparent={true}
       animationType='fade'
       collapsable={false}
     >
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <View style={styles.contentWrapper}>
-            <Image source={require('@/assets/icons/chat-outline.png')} style={styles.icon} />
-            <TouchableOpacity style={styles.texts}>
-              <Text style={styles.title}>New Chat</Text>
-              <Text style={styles.description}>Start chatting with your contact</Text>
-            </TouchableOpacity>
+      <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.3)' }}>
+        <View style={styles.container}>
+          <View style={styles.content}>
+            <View style={styles.contentWrapper}>
+              <Image source={require('@/assets/icons/chat-outline.png')} style={styles.icon} />
+              <TouchableOpacity style={styles.texts}>
+                <Text style={styles.title}>New Chat</Text>
+                <Text style={styles.description}>Start chatting with your contact</Text>
+              </TouchableOpacity>
+            </View>
+            <Hr color={'#F2F2F7'} marginTop={5} marginBottom={5} />
+            <View style={styles.contentWrapper}>
+              <Image source={require('@/assets/icons/contacts-outline.png')} style={styles.icon} />
+              <TouchableOpacity style={styles.texts}>
+                <Text style={styles.title}>New Contact</Text>
+                <Text style={styles.description}>Add a contact to be able to send messages</Text>
+              </TouchableOpacity>
+            </View>
+            <Hr color={'#F2F2F7'} marginTop={5} marginBottom={5} />
+            <View style={styles.contentWrapper}>
+              <Image source={require('@/assets/icons/people-outline.png')} style={styles.icon} />
+              <TouchableOpacity style={styles.texts}>
+                <Text style={styles.title}>New Group</Text>
+                <Text style={styles.description}>Create a group with your contacts</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <Hr color={'#F2F2F7'} marginTop={5} marginBottom={5} />
-          <View style={styles.contentWrapper}>
-            <Image source={require('@/assets/icons/contacts-outline.png')} style={styles.icon} />
-            <TouchableOpacity style={styles.texts}>
-              <Text style={styles.title}>New Contact</Text>
-              <Text style={styles.description}>Add a contact to be able to send messages</Text>
-            </TouchableOpacity>
-          </View>
-          <Hr color={'#F2F2F7'} marginTop={5} marginBottom={5} />
-          <View style={styles.contentWrapper}>
-            <Image source={require('@/assets/icons/people-outline.png')} style={styles.icon} />
-            <TouchableOpacity style={styles.texts}>
-              <Text style={styles.title}>New Group</Text>
-              <Text style={styles.description}>Create a group with your contacts</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
 
-        {/* cancel */}
-        <TouchableOpacity style={styles.button} onPress={() => setShowModal(false)}>
-          <Text style={styles.cancelText}>Cancel</Text>
-        </TouchableOpacity>
+          {/* cancel */}
+          <TouchableOpacity style={styles.button} onPress={() => setShowModal(false)}>
+            <Text style={styles.cancelText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   )

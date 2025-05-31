@@ -11,8 +11,6 @@ import StoryBubble from '@/components/storyBubble'
 import AddStoryButton from '@/components/addStoryButton'
 import SidebarModal from '@/components/sidebarModal'
 
-SplashScreen.preventAutoHideAsync();
-
 const Chats = () => {
   const [showSidebar, setShowSidebar] = useState(false)
   const router = useRouter()
