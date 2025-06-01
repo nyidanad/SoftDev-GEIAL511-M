@@ -2,7 +2,6 @@ import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import React, { Dispatch, SetStateAction, useState } from "react";
 
 import AddChatModal from "./addChatModal";
-import StartNewChatModal from "./startNewChatModal";
 
 const addChatButton = () => {
   const [showModal, setShowModal] = useState(false);
@@ -20,7 +19,6 @@ const addChatButton = () => {
       </TouchableOpacity>
 
       <AddChatModal showModal={showModal} setShowModal={setShowModal} />
-      <StartNewChatModal />
     </>
   );
 };

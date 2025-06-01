@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { Dispatch, SetStateAction } from "react";
 import {
   Modal,
   View,
@@ -8,9 +9,14 @@ import {
   Text,
 } from "react-native";
 
-const startNewChatModal = () => {
-  return (
-    <Modal animationType="fade" transparent={true} visible={true}>
+type modalProps = {
+  showModal: boolean;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+};
+
+const startNewChatModal = ({ showModal, setShowModal }: modalProps) => {
+    return (
+    <Modal animationType="fade" transparent={true} visible={showModal}>
       <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.2)" }}>
         <View style={styles.view}>
           <View style={styles.view2}>
@@ -21,7 +27,7 @@ const startNewChatModal = () => {
             />
           </View>
         </View>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => setShowModal(false)}>
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
       </View>

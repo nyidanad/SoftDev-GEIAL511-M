@@ -17,6 +17,8 @@ type modalProps = {
 };
 
 const addChatModal = ({ showModal, setShowModal }: modalProps) => {
+  const [showNewModal, setShowNewModal] = useState(false);
+
   return (
     <>
       <Modal
@@ -34,7 +36,7 @@ const addChatModal = ({ showModal, setShowModal }: modalProps) => {
                   source={require("@/assets/icons/chat-outline.png")}
                   style={styles.icon}
                 />
-                <TouchableOpacity style={styles.texts}>
+                <TouchableOpacity style={styles.texts} onPress={() => [setShowNewModal(true), setShowModal(false)]}>
                   <Text style={styles.title}>New Chat</Text>
                   <Text style={styles.description}>
                     Start chatting with your contact
@@ -66,6 +68,10 @@ const addChatModal = ({ showModal, setShowModal }: modalProps) => {
           </View>
         </View>
       </Modal>
+      <StartNewChatModal
+      showModal={showNewModal}
+      setShowModal={setShowNewModal}
+      />
     </>
   );
 };
