@@ -4,9 +4,9 @@ import { useGlobalSearchParams } from 'expo-router'
 
 import MessageBubble from '@/components/messageBubble'
 import MessageTextInput from '@/components/messageTextInput'
-import fetchMessages from '@/hooks/fetchMessages'
 
 import { getAuth } from 'firebase/auth'
+import useChatMessages from '@/hooks/useChatMessages'
 
 export type Message = {
   id: string
@@ -15,7 +15,7 @@ export type Message = {
   timestamp: string
   red?: boolean
   reactions?: string[]
-};
+}
 
 const ChatScreen = () => {
   const auth = getAuth()
@@ -27,19 +27,13 @@ const ChatScreen = () => {
 
 
   // Fetching messages for specific chat
-  useEffect(() => {
-    const loadMessages = async () => {
-      const messageData = await fetchMessages(id)
-      setMessages(messageData);
-    }
-    loadMessages()
-  }, [id])
+  useChatMessages(id, setMessages)
 
 
   // Scroll to bottom when new messages are added or keyboard shows
   useEffect(() => {
     if (flatListRef.current && messages.length > 0) {
-      flatListRef.current.scrollToEnd({ animated: true });
+      flatListRef.current.scrollToEnd({ animated: true })
     }
   }, [messages])
 
@@ -64,7 +58,7 @@ const ChatScreen = () => {
         keyExtractor={item => item.id}
         contentContainerStyle={{ paddingBottom: 10 }}
       />
-      <MessageTextInput current_user_id={CURRENT_USER_ID} messages={messages} setMessages={setMessages} />
+      <MessageTextInput current_user_id={CURRENT_USER_ID} />
     </KeyboardAvoidingView>
   )
 }

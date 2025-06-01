@@ -1,21 +1,16 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native'
 import { useGlobalSearchParams } from 'expo-router'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 
-import { Message } from '@/app/(tabs)/chats/[id]'
-
 import { addDoc, collection, Timestamp } from 'firebase/firestore'
 import { db } from '@/firebaseConfig'
-import fetchMessages from '@/hooks/fetchMessages'
 
 type messageTextInputProps = {
   current_user_id: string | undefined
-  messages: Message[]
-  setMessages: Dispatch<SetStateAction<Message[]>>
 }
 
-const messageTextInput = ({ current_user_id, messages, setMessages }: messageTextInputProps) => {
+const messageTextInput = ({ current_user_id }: messageTextInputProps) => {
   const [inputText, setInputText] = useState('')
   const { id } = useGlobalSearchParams()    // chatId
 
@@ -32,9 +27,6 @@ const messageTextInput = ({ current_user_id, messages, setMessages }: messageTex
     })
 
     setInputText('')
-
-    const messageData = await fetchMessages(id)
-    setMessages(messageData)
   }
 
   // Handle when pressing mic
