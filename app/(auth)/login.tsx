@@ -24,7 +24,6 @@ const Login = () => {
 
     try {
       const user = await signInWithEmailAndPassword(auth, email, password)
-      console.log(user.user.uid)
       if (user) router.replace('/chats')
     } catch (error) {
       console.log(error)

@@ -8,15 +8,15 @@ type chatBubleProps = {
   index: number
   name: string
   status: "online" | "offline" | "dnd"
-  lastMsg?: string
-  lastMsgStatus?: "sent" | "recieved" | "red"
-  lastMsgTime?: string
+  lastMessage?: string
+  lastStatus?: "sent" | "recieved" | "red"
+  lastUpdate?: string
   unread: boolean
   image: ImageSourcePropType
   onPress: () => void
 }
 
-const chatBubble = ({index, name, status, lastMsg, lastMsgStatus, lastMsgTime, unread, image, onPress}: chatBubleProps) => {
+const chatBubble = ({index, name, status, lastMessage, lastStatus, lastUpdate, unread, image, onPress}: chatBubleProps) => {
   const [showModal, setShowModal] = useState(false)
   const [modalPosition, setModalPosition] = useState({ top: 0 })
   const chatsRef = useRef<(View | null)[]>([])
@@ -32,7 +32,7 @@ const chatBubble = ({index, name, status, lastMsg, lastMsgStatus, lastMsgTime, u
   }
 
   let icon: keyof typeof Ionicons.glyphMap = 'warning'
-  switch(lastMsgStatus) {
+  switch(lastStatus) {
     case "sent":
       icon = 'checkmark-circle-outline'
       break
@@ -75,13 +75,13 @@ const chatBubble = ({index, name, status, lastMsg, lastMsgStatus, lastMsgTime, u
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {lastMsg}
+                {lastMessage}
               </Text>
             </View>
           </View>
           <View style={styles.chatDetails}>
             {unread == true ? <View style={styles.undread} /> : null }
-            <Text style={styles.lastMsgTime}>{lastMsgTime}</Text>
+            <Text style={styles.lastMsgTime}>{lastUpdate}</Text>
           </View>
         </View>
       </TouchableOpacity>
