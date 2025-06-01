@@ -1,40 +1,46 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
-import uuid from 'react-native-uuid';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native'
+import { useGlobalSearchParams } from 'expo-router'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 
-import { Message } from '@/app/(tabs)/chats/[id]';
-import { User } from '@firebase/auth';
+import { Message } from '@/app/(tabs)/chats/[id]'
+
+import { addDoc, collection, Timestamp } from 'firebase/firestore'
+import { db } from '@/firebaseConfig'
+import fetchMessages from '@/hooks/fetchMessages'
 
 type messageTextInputProps = {
-  current_user_id: string | undefined;
-  messages: Message[];
-  setMessages: Dispatch<SetStateAction<Message[]>>;
-};
+  current_user_id: string | undefined
+  messages: Message[]
+  setMessages: Dispatch<SetStateAction<Message[]>>
+}
 
 const messageTextInput = ({ current_user_id, messages, setMessages }: messageTextInputProps) => {
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState('')
+  const { id } = useGlobalSearchParams()    // chatId
 
+  // INSERT new message
   // Handle when pressing send
-  const handleSend = () => {
-    if (inputText.trim().length === 0) return;
+  const handleSend = async () => {
+    if (inputText.trim().length === 0) return
 
-    const newMessage: Message = {
-      id: uuid.v4().toString(),
+    const docRef = await addDoc(collection(db, `chats/${id}/messages`), {
       message: inputText.trim(),
-      isSent: current_user_id,  // string UID
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      red: false,
-    };
+      isSent: current_user_id,
+      timestamp: Timestamp.now(),
+      red: false
+    })
 
-    setMessages([...messages, newMessage]);
-    setInputText('');
-  };
+    setInputText('')
+
+    const messageData = await fetchMessages(id)
+    setMessages(messageData)
+  }
 
   // Handle when pressing mic
   const handleMic = () => {
     // Mic logic here
-  };
+  }
 
   return (
     <View style={styles.container}>
@@ -67,10 +73,10 @@ const messageTextInput = ({ current_user_id, messages, setMessages }: messageTex
         )}
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default messageTextInput;
+export default messageTextInput
 
 const styles = StyleSheet.create({
   container: {
@@ -101,4 +107,4 @@ const styles = StyleSheet.create({
     color: '#11175A',
     fontSize: 26,
   },
-});
+})

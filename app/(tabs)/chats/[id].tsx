@@ -1,20 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { FlatList, StyleSheet, KeyboardAvoidingView } from 'react-native';
-import { useGlobalSearchParams } from 'expo-router'; // Ha szükséged van a chatId-re a paraméterekből
+import React, { useState, useRef, useEffect } from 'react'
+import { FlatList, StyleSheet, KeyboardAvoidingView } from 'react-native'
+import { useGlobalSearchParams } from 'expo-router'
 
-import MessageBubble from '@/components/messageBubble';
-import MessageTextInput from '@/components/messageTextInput';
-import fetchMessages from '@/hooks/fetchMessages'; // <-- Új import
+import MessageBubble from '@/components/messageBubble'
+import MessageTextInput from '@/components/messageTextInput'
+import fetchMessages from '@/hooks/fetchMessages'
 
-import { getAuth } from 'firebase/auth';
+import { getAuth } from 'firebase/auth'
 
 export type Message = {
-  id: string;
-  message: string;
-  isSent: string | undefined;
-  timestamp: string;
-  red?: boolean;
-  reactions?: string[];
+  id: string
+  message: string
+  isSent: string | undefined
+  timestamp: string
+  red?: boolean
+  reactions?: string[]
 };
 
 const ChatScreen = () => {
@@ -29,10 +29,10 @@ const ChatScreen = () => {
   // Fetching messages for specific chat
   useEffect(() => {
     const loadMessages = async () => {
-      const messageData = await fetchMessages(id);
+      const messageData = await fetchMessages(id)
       setMessages(messageData);
-    };
-    loadMessages();
+    }
+    loadMessages()
   }, [id])
 
 
