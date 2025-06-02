@@ -1,16 +1,25 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { Dispatch, SetStateAction } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 
 import Hr from '@/components/hr'
+import { deleteDoc, doc } from 'firebase/firestore'
+import { db } from '@/firebaseConfig'
 
 type ModalOptions = {
+  chatId: string
   showModal: boolean
   setShowModal: Dispatch<SetStateAction<boolean>>
   modalPosition: {top: number}
 }
 
-const chatOptionsModal = ({ showModal, setShowModal, modalPosition }: ModalOptions) => {
+const chatOptionsModal = ({ chatId, showModal, setShowModal, modalPosition }: ModalOptions) => {
+
+  // Handle chat deletion
+  const onDelete = async () => {
+    await deleteDoc(doc(db, 'chats', `${chatId}`))
+  }
+
   return (
     <Modal
       animationType="fade"
@@ -60,7 +69,7 @@ const chatOptionsModal = ({ showModal, setShowModal, modalPosition }: ModalOptio
             <Hr color='#EDEEF2' marginTop={8} marginBottom={8} />
 
             {/* Delete */}
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onDelete}>
               <View style={styles.button}>
                 <Text style={[styles.text, { color: 'red' }]}>Delete</Text>
                 <Ionicons name="trash" style={[styles.icon, { color: 'red' }]} />

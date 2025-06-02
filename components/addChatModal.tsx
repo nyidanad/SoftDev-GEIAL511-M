@@ -1,11 +1,4 @@
-import {
-  Image,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import StartNewChatModal from "./startNewChatModal";
 
@@ -71,6 +64,7 @@ const addChatModal = ({ showModal, setShowModal }: modalProps) => {
       <StartNewChatModal
       showModal={showNewModal}
       setShowModal={setShowNewModal}
+      setShowBackModal={setShowModal}
       />
     </>
   );

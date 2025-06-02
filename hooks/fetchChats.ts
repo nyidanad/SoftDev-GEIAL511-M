@@ -1,33 +1,35 @@
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
+import { collection, doc, getDoc, onSnapshot, query, where } from 'firebase/firestore'
 import { getAuth } from '@firebase/auth'
 import { db } from '@/firebaseConfig'
-
 import { Chat } from '@/app/(tabs)/chats'
 
-const fetchDatas = async (): Promise<Chat[] | undefined> => {
+type ChatsCallback = (chats: Chat[]) => void
+
+export const fetchChats = (callback: ChatsCallback) => {
   const auth = getAuth()
   const user = auth.currentUser
+  if (!user) return () => {}
+
   const chatsCollection = collection(db, 'chats')
   const usersCollection = collection(db, 'users')
+  const qc = query(chatsCollection, where('participants', 'array-contains', user.uid))
 
-  if (!user) return
-
-  try {
-    const qc = query(chatsCollection, where('participants', 'array-contains', user.uid))
-    const snapshot = await getDocs(qc)
-
-    const chatList = await Promise.all(
+  const unsubscribe = onSnapshot(qc, async (snapshot) => {
+    const chatList: Chat[] = await Promise.all(
       snapshot.docs.map(async (docSnap) => {
         const data = docSnap.data()
 
-        const lastUpdate = data.lastUpdate?.toDate().toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false,
-        }) ?? ''
+        let lastUpdate = ''
+        if (data.lastUpdate && typeof data.lastUpdate.toDate === 'function') {
+          lastUpdate = data.lastUpdate.toDate().toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })
+        }
 
-        const participants = data.participants as string[];
-        const friendId = participants.find(uid => uid !== user.uid);
+        const participants = data.participants as string[]
+        const friendId = participants.find(uid => uid !== user.uid)
 
         let friendData
         if (friendId) {
@@ -41,18 +43,15 @@ const fetchDatas = async (): Promise<Chat[] | undefined> => {
           status: friendData?.status ?? 'offline',
           chatColor: data.chatColor ?? '#C1F6A7',
           lastMessage: data.lastMessage ?? '',
-          lastUpdate: lastUpdate || new Date().toISOString(),
+          lastUpdate,
           unread: data.unread ?? false,
           image: friendData?.image ?? require('@/assets/images/avatar.png'),
-          isSent: data.isSent
+          isSent: data.isSent,
         } as Chat
       })
     )
+    callback(chatList)
+  })
 
-    return chatList
-  } catch (error) {
-    console.error('Error fetching chats:', error)
-  }
+  return unsubscribe
 }
-
-export default fetchDatas

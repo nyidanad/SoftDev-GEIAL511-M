@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FlatList, ImageSourcePropType, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useFonts } from 'expo-font'
-import { useFocusEffect, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 
 import ChatBubble from '@/components/chatBubble'
 import AddChatButton from '@/components/addChatButton'
@@ -10,7 +10,8 @@ import StoryBubble from '@/components/storyBubble'
 import AddStoryButton from '@/components/addStoryButton'
 import SidebarModal from '@/components/sidebarModal'
 
-import fetchChats from '@/hooks/fetchChats'
+import { fetchChats } from '@/hooks/fetchChats'
+import { User } from '@/hooks/usePeople'
 
 import { collection, doc, getDoc } from 'firebase/firestore'
 import { db } from '@/firebaseConfig'
@@ -27,12 +28,6 @@ export type Chat = {
   isSent: string
 }
 
-type User = {
-  name: string
-  email: string
-  image: ImageSourcePropType
-  status: "online" | "offline" | "busy"
-}
 
 const Chats = () => {
   const auth = getAuth()
@@ -49,16 +44,15 @@ const Chats = () => {
 
   
   // Fetching current user's chats
-  useFocusEffect(
-    useCallback(() => {
-      const loadChats = async () => {
-        const chatData = await fetchChats()
-        // @ts-ignore
-        setChats(chatData)
-      }
-      loadChats()
-    }, [])
-  )
+  useEffect(() => {
+    const unsubscribe = fetchChats((chatData) => {
+      setChats(chatData)
+    })
+
+    return () => {
+      if (unsubscribe) unsubscribe()
+    }
+  }, [])
 
 
   // Get current user datas
@@ -124,6 +118,7 @@ const Chats = () => {
                 image={item.image}
                 uid={user!.uid}
                 isSent={item.isSent}
+                chatId={item.id}
                 onPress={() => router.push({
                   pathname: '/chats/[id]',
                   params: {

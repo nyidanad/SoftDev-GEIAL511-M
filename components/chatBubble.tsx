@@ -13,10 +13,11 @@ type chatBubleProps = {
   image: ImageSourcePropType
   uid: string
   isSent: string
+  chatId: string
   onPress: () => void
 }
 
-const chatBubble = ({index, name, status, lastMessage, lastUpdate, unread, image, uid, isSent, onPress}: chatBubleProps) => {
+const chatBubble = ({index, name, status, lastMessage, lastUpdate, unread, image, uid, isSent, chatId, onPress}: chatBubleProps) => {
   const [showModal, setShowModal] = useState(false)
   const [modalPosition, setModalPosition] = useState({ top: 0 })
   const chatsRef = useRef<(View | null)[]>([])
@@ -60,22 +61,26 @@ const chatBubble = ({index, name, status, lastMessage, lastUpdate, unread, image
           <View style={styles.chatWrapper}>
             <Text style={[styles.name, isSent != uid && { fontWeight: 'bold' }]}>{name}</Text>
             <View style={styles.chatStatusDetails}>
-              <Text 
-                style={[styles.lastMsg, isSent != uid && { color: '#363636', fontWeight: '500' }]}
+              <Text
+                style={[styles.lastMsg, lastMessage !== '' && isSent !== uid && { color: '#363636', fontWeight: '500' }]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {isSent == uid ? 'You ' + lastMessage : lastMessage}
+                {lastMessage === ''
+                  ? "Now you're friends!"
+                  : isSent === uid
+                  ? 'You: ' + lastMessage
+                  : lastMessage}
               </Text>
             </View>
           </View>
           <View style={styles.chatDetails}>
-            {isSent != uid ? <View style={styles.undread} /> : null }
+            {isSent !== uid && lastMessage !== '' && <View style={styles.undread} />}
             <Text style={styles.lastMsgTime}>{lastUpdate}</Text>
           </View>
         </View>
       </TouchableOpacity>
-      <ChatOptionsModal showModal={showModal} setShowModal={setShowModal} modalPosition={modalPosition} />
+      <ChatOptionsModal chatId={chatId} showModal={showModal} setShowModal={setShowModal} modalPosition={modalPosition} />
     </View>
   )
 }
