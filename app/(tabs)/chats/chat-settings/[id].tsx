@@ -1,12 +1,47 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { useLocalSearchParams } from 'expo-router';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { useLocalSearchParams } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-type Props = {}
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db } from '@/firebaseConfig';
 
-const ChatSettings = (props: Props) => {
-  const { name, status, image } = useLocalSearchParams()
+const colors = ['#A7CFF6', '#A7F6E3', '#D8F6A7', '#C1F6A7',
+                '#F6F6A7', '#F6D8A7', '#E3C4A7', '#F6A7A7',
+                '#F6A7D8', '#D8A7F6']
+
+const ChatSettings = () => {
+  const { id, name, status, image } = useLocalSearchParams()
+  const [color, setColor] = useState('')
+  const [selectedColor, setSelectedColor] = useState(color)
+
+  // Fetch chatColor from database
+  useEffect(() => {
+    const getChatColor = async () => {
+      const docRef = doc(db, 'chats', `${id}`)
+      const docSnap = await getDoc(docRef)
+
+      if (docSnap.exists()) {
+        setColor(docSnap.data().chatColor)
+        setSelectedColor(docSnap.data().chatColor)
+      }
+    }
+    getChatColor()
+  }, [])
+    
+
+  // Update chatColor in database
+  useEffect(() => {
+  const updateColor = async () => {
+    if (selectedColor) {
+      const docRef = doc(db, 'chats', `${id}`)
+      await updateDoc(docRef, {
+        chatColor: selectedColor
+      })
+    }
+  }
+  updateColor()
+}, [selectedColor])
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -22,38 +57,13 @@ const ChatSettings = (props: Props) => {
           <View style={styles.colorView}>
             <Text style={styles.colorText}>Color Theme</Text>
             <View style={styles.colorsView}>
-              <TouchableOpacity>
-                <View style={styles.blue}></View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.turkiz}></View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.lightGreen}></View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.green}>
-                  <View style={styles.white}></View>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.yellow}></View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.orange}></View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.brown}></View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.red}></View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.pink}></View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.purple}></View>
-              </TouchableOpacity>
+              {colors.map((c) => (
+                <TouchableOpacity key={c} onPress={() => setSelectedColor(c)}>
+                  <View style={[styles.colorCircle, { backgroundColor: c }]}>
+                    {selectedColor === c && <View style={styles.innerDot} />}
+                  </View>
+                </TouchableOpacity>
+              ))}
             </View>
             <Text style={styles.colorText}>Alias</Text>
             <View style={styles.viewInputAlias}>
@@ -228,78 +238,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
   },
-  colorText: {
-    fontSize: 10,
-    color: "#BBBBBB",
-    margin: 8,
-  },
-  blue: {
-    backgroundColor: "#A7CEF6",
-    borderRadius: 20,
-    height: 30,
-    width: 30,
-  },
-  turkiz: {
-    backgroundColor: "#A7F6E3",
-    borderRadius: 20,
-    height: 30,
-    width: 30,
-  },
-  lightGreen: {
-    backgroundColor: "#D8F6A7",
-    borderRadius: 20,
-    height: 30,
-    width: 30,
-  },
-  green: {
-    backgroundColor: "#C1F6A7",
+  colorCircle: {
     borderRadius: 20,
     height: 30,
     width: 30,
     justifyContent: "center",
     alignItems: "center",
+    marginHorizontal: 2,
   },
-  white: {
+  innerDot: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 8,
-    height: 15,
-    width: 15,
+    borderRadius: 999,
+    width: 14,
+    height: 14,
   },
-  yellow: {
-    backgroundColor: "#F6F6A7",
-    borderRadius: 20,
-    height: 30,
-    width: 30,
-  },
-  orange: {
-    backgroundColor: "#F6D8A7",
-    borderRadius: 20,
-    height: 30,
-    width: 30,
-  },
-  brown: {
-    backgroundColor: "#E3C4A7",
-    borderRadius: 20,
-    height: 30,
-    width: 30,
-  },
-  red: {
-    backgroundColor: "#F6A7A7",
-    borderRadius: 20,
-    height: 30,
-    width: 30,
-  },
-  pink: {
-    backgroundColor: "#F6A7D8",
-    borderRadius: 20,
-    height: 30,
-    width: 30,
-  },
-  purple: {
-    backgroundColor: "#D8A7F6",
-    borderRadius: 20,
-    height: 30,
-    width: 30,
+  colorText: {
+    fontSize: 10,
+    color: "#BBBBBB",
+    margin: 8,
   },
   viewInputAlias: {
     flexDirection: "row",

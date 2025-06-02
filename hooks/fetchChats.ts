@@ -39,11 +39,12 @@ const fetchDatas = async (): Promise<Chat[] | undefined> => {
           id: docSnap.id,
           name: friendData?.name ?? 'Unnamed',
           status: friendData?.status ?? 'offline',
+          chatColor: data.chatColor ?? '#C1F6A7',
           lastMessage: data.lastMessage ?? '',
-          lastStatus: data.lastStatus ?? 'received',
           lastUpdate: lastUpdate || new Date().toISOString(),
           unread: data.unread ?? false,
           image: friendData?.image ?? require('@/assets/images/avatar.png'),
+          isSent: data.isSent
         } as Chat
       })
     )

@@ -49,14 +49,14 @@ const ChatScreen = () => {
   )
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={80}>
+    <KeyboardAvoidingView style={{ flex: 1 }} >
       <FlatList
         style={styles.list}
         ref={flatListRef}
         data={messages}
         renderItem={renderItem}
         keyExtractor={item => item.id}
-        contentContainerStyle={{ paddingBottom: 10 }}
+        contentContainerStyle={{ paddingVertical: 10 }}
       />
       <MessageTextInput current_user_id={CURRENT_USER_ID} />
     </KeyboardAvoidingView>
@@ -72,14 +72,5 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
     paddingHorizontal: 10,
-  },
-  centered: { // Stílus a betöltő és hibaüzenet középre igazításához
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: { // Stílus a hibaüzenet szövegéhez
-    color: 'red',
-    fontSize: 16,
   },
 })

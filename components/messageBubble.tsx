@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, Image, ImageSourcePropType } from 'react-native'
-import { useLocalSearchParams } from 'expo-router'
+import { useFocusEffect, useGlobalSearchParams } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
+
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '@/firebaseConfig'
 
 type MessageBubbleProps = {
   message: string
@@ -11,7 +14,24 @@ type MessageBubbleProps = {
 }
 
 const messageBubble = ({message, isSent, timestamp, red}: MessageBubbleProps) => {
-  const {image} = useLocalSearchParams()
+  const {id, image} = useGlobalSearchParams()
+  const [chatColor, setChatColor] = useState('')
+
+  // Fetch chatColor from database
+  useFocusEffect(
+    useCallback(() => {
+      const getChatColor = async () => {
+        const docRef = doc(db, 'chats', `${id}`)
+        const docSnap = await getDoc(docRef)
+
+        if (docSnap.exists()) {
+          setChatColor(docSnap.data().chatColor)
+        }
+      }
+
+      getChatColor()
+    }, [id])
+  )
 
   return (
     <View style={[styles.container, isSent ? styles.senderContainer : styles.recieverContainer]}>
@@ -21,7 +41,7 @@ const messageBubble = ({message, isSent, timestamp, red}: MessageBubbleProps) =>
         </View>
       }
 
-      <View style={[styles.msgWrapper, isSent ? styles.senderMsgWrapper : styles.recieverMsgWrapper]}>
+      <View style={[styles.msgWrapper, isSent ? [styles.senderMsgWrapper, { backgroundColor: chatColor }] : styles.recieverMsgWrapper]}>
         <Text style={styles.msg}>{message}</Text>
         <View style={styles.details}>
           <Text style={styles.time}>{timestamp}</Text>
@@ -68,7 +88,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   senderMsgWrapper: {
-    backgroundColor: '#C1F6A7',
     alignSelf: 'flex-end',
   },
   recieverMsgWrapper: {

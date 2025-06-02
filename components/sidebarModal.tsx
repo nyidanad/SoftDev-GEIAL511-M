@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, ImageSourcePropType, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { useFonts } from 'expo-font'
 import { useRouter } from 'expo-router'
@@ -8,11 +8,15 @@ import { getAuth } from '@firebase/auth'
 import { auth } from '@/firebaseConfig'
 
 type ModalProps = {
+  name: string
+  email: string
+  image: ImageSourcePropType
+  status: 'online' | 'offline' | 'busy'
   showModal: boolean
   setShowModal: Dispatch<SetStateAction<boolean>>
 }
 
-const sidebarModal = ({ showModal, setShowModal }: ModalProps) => {
+const sidebarModal = ({ name, email, image, status, showModal, setShowModal }: ModalProps) => {
   const router = useRouter()
 
   const [loaded, error] = useFonts({
@@ -83,8 +87,8 @@ const sidebarModal = ({ showModal, setShowModal }: ModalProps) => {
             <View style={styles.profile}>
               <Image source={require('@/assets/images/avatar.png')} style={styles.avatar} />
               <View>
-                <Text style={styles.name}>Nyíri Dániel</Text>
-                <Text style={styles.email}>nyiridaniel3@gmail.com</Text>
+                <Text style={styles.name}>{name}</Text>
+                <Text style={styles.email}>{email}</Text>
               </View>
             </View>
             <View style={styles.options}>

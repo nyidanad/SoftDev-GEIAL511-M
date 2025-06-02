@@ -1,25 +1,26 @@
-import { ColorValue, Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useRef, useState } from 'react'
-import Ionicons from '@expo/vector-icons/Ionicons'
+import { ColorValue, Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import ChatOptionsModal from './chatOptionsModal'
 
 type chatBubleProps = {
   index: number
   name: string
-  status: "online" | "offline" | "dnd"
+  status: "online" | "offline" | "busy"
   lastMessage?: string
-  lastStatus?: "sent" | "recieved" | "red"
   lastUpdate?: string
   unread: boolean
   image: ImageSourcePropType
+  uid: string
+  isSent: string
   onPress: () => void
 }
 
-const chatBubble = ({index, name, status, lastMessage, lastStatus, lastUpdate, unread, image, onPress}: chatBubleProps) => {
+const chatBubble = ({index, name, status, lastMessage, lastUpdate, unread, image, uid, isSent, onPress}: chatBubleProps) => {
   const [showModal, setShowModal] = useState(false)
   const [modalPosition, setModalPosition] = useState({ top: 0 })
   const chatsRef = useRef<(View | null)[]>([])
+
 
   // Calculating Modal position
   const calcModalPosition = (index: number) => {
@@ -31,22 +32,12 @@ const chatBubble = ({index, name, status, lastMessage, lastStatus, lastUpdate, u
     }
   }
 
-  let icon: keyof typeof Ionicons.glyphMap = 'warning'
-  switch(lastStatus) {
-    case "sent":
-      icon = 'checkmark-circle-outline'
-      break
-    case "red":
-      icon = 'checkmark-done'
-      break
-  }
-
   let statusColor: ColorValue = '#000'
   switch(status) {
     case "online":
       statusColor = '#34C759'
       break
-    case "dnd":
+    case "busy":
       statusColor = '#FF3B30'
       break
   }
@@ -67,20 +58,19 @@ const chatBubble = ({index, name, status, lastMessage, lastStatus, lastUpdate, u
 
         <View style={styles.chatContent}>
           <View style={styles.chatWrapper}>
-            <Text style={[styles.name, unread == true && { fontWeight: 'bold' }]}>{name}</Text>
+            <Text style={[styles.name, isSent != uid && { fontWeight: 'bold' }]}>{name}</Text>
             <View style={styles.chatStatusDetails}>
-              {unread == false && <Ionicons name={icon} style={styles.icon} />}
               <Text 
-                style={[styles.lastMsg, unread == true && { color: '#363636', fontWeight: '500' }]}
+                style={[styles.lastMsg, isSent != uid && { color: '#363636', fontWeight: '500' }]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {lastMessage}
+                {isSent == uid ? 'You ' + lastMessage : lastMessage}
               </Text>
             </View>
           </View>
           <View style={styles.chatDetails}>
-            {unread == true ? <View style={styles.undread} /> : null }
+            {isSent != uid ? <View style={styles.undread} /> : null }
             <Text style={styles.lastMsgTime}>{lastUpdate}</Text>
           </View>
         </View>

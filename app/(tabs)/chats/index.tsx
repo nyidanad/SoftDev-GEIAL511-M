@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FlatList, ImageSourcePropType, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useFonts } from 'expo-font'
-import { useRouter } from 'expo-router'
+import { useFocusEffect, useRouter } from 'expo-router'
 
 import ChatBubble from '@/components/chatBubble'
 import AddChatButton from '@/components/addChatButton'
@@ -12,18 +12,33 @@ import SidebarModal from '@/components/sidebarModal'
 
 import fetchChats from '@/hooks/fetchChats'
 
+import { collection, doc, getDoc } from 'firebase/firestore'
+import { db } from '@/firebaseConfig'
+import { getAuth } from '@firebase/auth'
+
 export type Chat = {
   id: string
   name: string
-  status: "online" | "offline" | "dnd"
+  status: "online" | "offline" | "busy"
   lastMessage: string
-  lastStatus: "sent" | "recieved" | "red"
   lastUpdate: string
   unread: boolean
   image: ImageSourcePropType
+  isSent: string
+}
+
+type User = {
+  name: string
+  email: string
+  image: ImageSourcePropType
+  status: "online" | "offline" | "busy"
 }
 
 const Chats = () => {
+  const auth = getAuth()
+  const user = auth.currentUser
+  const [userData, setUserData] = useState<User>()
+
   const router = useRouter()
   const [showSidebar, setShowSidebar] = useState(false)
   const [chats, setChats] = useState<Chat[]>([])
@@ -34,14 +49,31 @@ const Chats = () => {
 
   
   // Fetching current user's chats
+  useFocusEffect(
+    useCallback(() => {
+      const loadChats = async () => {
+        const chatData = await fetchChats()
+        // @ts-ignore
+        setChats(chatData)
+      }
+      loadChats()
+    }, [])
+  )
+
+
+  // Get current user datas
   useEffect(() => {
-    const loadChats = async () => {
-      const chatData = await fetchChats();
-      // @ts-ignore
-      setChats(chatData);
-    };
-    loadChats();
-  }, []);
+    const loadData = async () => {
+      const usersCollection = collection(db, 'users')
+      
+      if (user?.uid) {
+        const userDoc = await getDoc(doc(usersCollection, user.uid))
+        const data = userDoc.exists() ? userDoc.data() : undefined
+        setUserData(data as User)
+      }
+    }
+    loadData()
+  }, [])
 
 
   const storiesData = [
@@ -87,17 +119,18 @@ const Chats = () => {
                 name={item.name}
                 status={item.status}
                 lastMessage={item.lastMessage}
-                lastStatus={item.lastStatus}
                 lastUpdate={item.lastUpdate}
                 unread={item.unread}
                 image={item.image}
+                uid={user!.uid}
+                isSent={item.isSent}
                 onPress={() => router.push({
                   pathname: '/chats/[id]',
                   params: {
                     id: item.id,
                     name: item.name,
                     status: item.status,
-                    image: item.image as any
+                    image: item.image as any,
                   }
                 })}
               />}
@@ -107,7 +140,17 @@ const Chats = () => {
           />
         </View>
         <AddChatButton />
-        <SidebarModal showModal={showSidebar} setShowModal={setShowSidebar} />
+
+        {userData && (
+          <SidebarModal
+            name={userData.name}
+            email={userData.email}
+            image={userData.image}
+            status={userData.status}
+            showModal={showSidebar}
+            setShowModal={setShowSidebar}
+          />
+        )}
       </View>
     </>
   )

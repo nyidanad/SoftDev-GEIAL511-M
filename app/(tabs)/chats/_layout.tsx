@@ -15,7 +15,7 @@ export default function AppLayout() {
       case "offline":
         statusColor = '#BBBBBE'
         break
-      case "dnd":
+      case "busy":
         statusColor = '#F0372D'
         break
     }

@@ -3,7 +3,7 @@ import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native'
 import { useGlobalSearchParams } from 'expo-router'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 
-import { addDoc, collection, Timestamp } from 'firebase/firestore'
+import { addDoc, collection, doc, Timestamp, updateDoc } from 'firebase/firestore'
 import { db } from '@/firebaseConfig'
 
 type messageTextInputProps = {
@@ -19,12 +19,20 @@ const messageTextInput = ({ current_user_id }: messageTextInputProps) => {
   const handleSend = async () => {
     if (inputText.trim().length === 0) return
 
-    const docRef = await addDoc(collection(db, `chats/${id}/messages`), {
+    const docAddRef = await addDoc(collection(db, `chats/${id}/messages`), {
       message: inputText.trim(),
       isSent: current_user_id,
       timestamp: Timestamp.now(),
       red: false
     })
+
+    const docUpdRef = doc(db, 'chats', `${id}`)
+      await updateDoc(docUpdRef, {
+        isSent: current_user_id,
+        lastMessage: inputText.trim(),
+        lastUpdate: Timestamp.now(),
+        unread: true
+      })
 
     setInputText('')
   }
