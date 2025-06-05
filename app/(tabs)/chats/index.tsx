@@ -9,6 +9,7 @@ import AddChatButton from '@/components/addChatButton'
 import StoryBubble from '@/components/storyBubble'
 import AddStoryButton from '@/components/addStoryButton'
 import SidebarModal from '@/components/sidebarModal'
+import SearchBar from '@/components/searchbar'
 
 import { fetchChats } from '@/hooks/fetchChats'
 import { User } from '@/hooks/usePeople'
@@ -37,6 +38,8 @@ const Chats = () => {
   const router = useRouter()
   const [showSidebar, setShowSidebar] = useState(false)
   const [chats, setChats] = useState<Chat[]>([])
+  const [searchVisible, setSearchVisible] = useState(false)
+  const [searchText, setSearchText] = useState('')
 
   const [loaded, error] = useFonts({
     CheGueveraBarry: require('@/assets/fonts/CheGuevaraBarry-Brown.ttf'),
@@ -87,8 +90,22 @@ const Chats = () => {
           <TouchableOpacity onPress={() => setShowSidebar(true)} >
             <FontAwesome name='bars' style={styles.headerIcons} />
           </TouchableOpacity>
-          <Text style={{ fontFamily: 'CheGueveraBarry', fontSize: 26, color: '#11175A' }}>Bubly</Text>
-          <FontAwesome name='search' style={styles.headerIcons} />
+
+          {searchVisible ? (
+            <SearchBar
+              searchVisible={searchVisible}
+              setSearchVisible={setSearchVisible}
+              searchText={searchText}
+              setSearchText={setSearchText}
+            />
+          ) : (
+            <>
+              <Text style={{ fontFamily: 'CheGueveraBarry', fontSize: 26, color: '#11175A' }}>Bubly</Text>
+              <TouchableOpacity onPress={() => setSearchVisible(prev => !prev)}>
+                <FontAwesome name='search' style={styles.headerIcons} />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
 
         <View style={styles.stories}>
@@ -105,7 +122,9 @@ const Chats = () => {
         <View style={styles.chats}>
           <Text style={styles.chatsTitle}>Chats</Text>
           <FlatList
-            data={chats}
+            data={chats.filter(chat =>
+              chat.name.toLowerCase().includes(searchText.toLowerCase())
+            )}
             keyExtractor={(item) => item.id}
             renderItem={({item, index}) => 
               <ChatBubble 

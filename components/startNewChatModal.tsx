@@ -1,7 +1,7 @@
 import usePeople, { User } from "@/hooks/usePeople";
 import { Ionicons } from "@expo/vector-icons";
-import { Dispatch, SetStateAction, useState } from "react";
-import { Modal, View, StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { Modal, View, StyleSheet, TextInput, TouchableOpacity, Text, FlatList } from "react-native";
 
 import StartNewChatBubble from "./startNewChatBubble";
 
@@ -13,8 +13,16 @@ type modalProps = {
 
 const startNewChatModal = ({ showModal, setShowModal, setShowBackModal }: modalProps) => {
   const [users, setUsers] = useState<User[]>([])
+  const [searchQuery, setSearchQuery] = useState("");
 
   usePeople(setUsers)
+
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) =>
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [users, searchQuery]);
 
   return (
     <Modal animationType="fade" transparent={true} visible={showModal}>
@@ -23,14 +31,21 @@ const startNewChatModal = ({ showModal, setShowModal, setShowBackModal }: modalP
           <View style={styles.searchbar}>
             <Ionicons name="search" style={styles.icon} />
             <TextInput
+              value={searchQuery}
+              onChangeText={setSearchQuery}
               placeholder="Search for friends..."
               placeholderTextColor={"#999999"}
             />
           </View>
           <View>
-            { users.map((user, index) => (
-              <StartNewChatBubble key={user.uid} index={index} uid={user.uid} name={user.name} email={user.email} image={user.image} />
-            ))}
+            <FlatList 
+              data={filteredUsers}
+              keyExtractor={(item) => item.email}
+              renderItem={({item, index}) => <StartNewChatBubble key={item.email} index={index} uid={item.uid} name={item.name} email={item.email} image={item.image} />}
+              showsVerticalScrollIndicator={false}
+              style={{ maxHeight: '90%' }}
+            />
+              
           </View>
         </View>
         <TouchableOpacity style={styles.button} onPress={() => [setShowModal(false), setShowBackModal(true)]}>
